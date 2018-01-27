@@ -30,12 +30,12 @@ const (
 	subjectsRequest
 )
 
-// NewAccount creates a new DsbAccount object
+// NewAccount creates a new account interface
 func NewAccount(username string, password string) Account {
 	return Account{username, password}
 }
 
-// GetData gets all available information of the account
+// GetData returns all available information of the account
 func (account *Account) GetData() (*Response, error) {
 	JSONdata, err := json.Marshal(map[string]interface{}{
 		"UserId":     account.username,
@@ -158,17 +158,20 @@ func (account *Account) GetContent() (*MenuItem, error) {
 	return data.GetContent()
 }
 
-// GetTimetables returns timetables, use GetContent() to get the according menuItem first
+// GetTimetables returns all timetables,
+// use GetContent() to get the according menuItem first
 func (menuItem *MenuItem) GetTimetables() ([]MenuItemChildItem, error) {
 	for _, menuItemChild := range menuItem.Childs {
 		if menuItemChild.Method == "timetable" {
 			return menuItemChild.Root.Childs, nil
 		}
 	}
-	return []MenuItemChildItem{}, errors.New("timetables not found")
+	return []MenuItemChildItem{}, errors.New("no timetables found")
 }
 
 // GetURL returns the url of specified content
 func (menuItemChildItem *MenuItemChildItem) GetURL() string {
 	return menuItemChildItem.Childs[0].Detail
 }
+
+// TODO: implement more getters
