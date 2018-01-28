@@ -1,3 +1,31 @@
+// Package dsb lets you access content from DSBmobile in golang.
+//
+// Example:
+//
+//		import (
+//			"fmt"
+//
+//			"github.com/irgendwr/dsb-go"
+//		)
+//
+//		func main() {
+//			account := dsb.NewAccount("123456", "password")
+//			content, err := account.GetContent()
+//
+//			if err != nil {
+//				fmt.Printf("Error: %s", err)
+//			}
+//
+//			timetables, err := content.GetTimetables()
+//
+//			if err != nil {
+//				fmt.Printf("Error: %s", err)
+//			}
+//
+//			timetables[0].GetURL()
+//			fmt.Printf("URL: %s", url)
+//		}
+//
 package dsb
 
 import (
