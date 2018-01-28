@@ -1,6 +1,5 @@
 # dsb-go
 > This library lets you access content from DSBmobile in golang.
-https://github.com/irgendwr/dsb-go
 
 [![GoDoc](https://godoc.org/github.com/irgendwr/dsb-go?status.svg)](https://godoc.org/github.com/irgendwr/dsb-go)
 [![Travis](https://travis-ci.org/irgendwr/dsb-go.svg)](https://travis-ci.org/irgendwr/dsb-go)

@@ -161,7 +161,7 @@ func (account *Account) GetData() (*Response, error) {
 	}
 
 	if response.Resultcode != success {
-		return nil, fmt.Errorf("Unknown Resultcode: %d", response.Resultcode)
+		return nil, fmt.Errorf("Unexpected Resultcode: %d", response.Resultcode)
 	}
 
 	return &response, nil
