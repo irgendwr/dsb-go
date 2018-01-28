@@ -35,6 +35,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/pkg/errors"
 )
@@ -116,9 +117,11 @@ func (account *Account) GetData() (*Response, error) {
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Referer", "https://www.dsbmobile.de/default.aspx")
 
-	// TODO: don't use default client
 	// send request
-	res, err := http.DefaultClient.Do(req)
+	httpClient := &http.Client{
+		Timeout: time.Second * 10,
+	}
+	res, err := httpClient.Do(req)
 	if err != nil {
 		return nil, errors.Wrap(err, "request failed")
 	}
