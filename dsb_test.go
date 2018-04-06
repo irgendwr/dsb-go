@@ -1,18 +1,15 @@
-package dsb_test
+package dsb
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"testing"
-
-	dsb "."
 )
 
-var data *dsb.Response
+var data *Response
 
 func TestMain(m *testing.M) {
-	account := dsb.NewAccount("196041", "DVfSiW")
+	account := NewAccount("196041", "DVfSiW")
 	var err error
 	data, err = account.GetData()
 	if err != nil {
@@ -34,21 +31,4 @@ func TestGetTimetables(t *testing.T) {
 	} else {
 		t.Logf("%d timetable(s) found", tCount)
 	}
-}
-
-func Example() {
-	account := dsb.NewAccount("user", "password")
-	content, err := account.GetContent()
-	if err != nil {
-		fmt.Printf("could not get account content: %s", err)
-	}
-
-	timetables := content.GetTimetables()
-	if len(timetables) != 0 {
-		fmt.Println("no timetables found")
-		return
-	}
-
-	url := timetables[0].GetURL()
-	fmt.Printf("URL: %s", url)
 }

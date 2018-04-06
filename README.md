@@ -30,7 +30,7 @@ func main() {
         fmt.Printf("Error: %s", err)
     }
 
-    timetables, err := content.GetTimetables()
+    timetables := content.GetTimetables()
     if len(timetables) != 0 {
         fmt.Println("no timetables found")
         return
