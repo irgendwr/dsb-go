@@ -31,9 +31,9 @@ func main() {
     }
 
     timetables, err := content.GetTimetables()
-
-    if err != nil {
-        fmt.Printf("Error: %s", err)
+    if len(timetables) != 0 {
+        fmt.Println("no timetables found")
+        return
     }
 
     timetables[0].GetURL()

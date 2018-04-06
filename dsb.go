@@ -89,6 +89,7 @@ func (account *Account) GetData() (*Response, error) {
 	req.Header.Add("bundle_id", bundleID)
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Referer", "https://www.dsbmobile.de/default.aspx")
+	req.Header.Set("User-Agent", "dsb-go")
 
 	// send request
 	httpClient := &http.Client{
@@ -127,54 +128,92 @@ func (account *Account) GetData() (*Response, error) {
 	}
 	defer gzipReader.Close()
 
+	// for debugging
+	//jsonStr, _ := ioutil.ReadAll(gzipReader)
+	//fmt.Printf("%s\n\n", jsonStr)
+
 	// decode json
 	var response Response
 	if err := json.NewDecoder(gzipReader).Decode(&response); err != nil {
 		return nil, errors.Wrap(err, "json unmarshal of response failed")
 	}
 
-	if response.Resultcode != success {
-		return nil, fmt.Errorf("Unexpected Resultcode: %d", response.Resultcode)
+	if response.StatusCode != success {
+		return nil, fmt.Errorf("API request failed: %s (%d)", response.Status, response.StatusCode)
 	}
 
 	return &response, nil
 }
 
-// GetContent returns the MenuItem containing the main content
-func (data *Response) GetContent() (*MenuItem, error) {
-	for _, menuItem := range data.MenuItems {
-		// TODO: use Method or Index
-		if menuItem.Title == "Inhalte" {
-			return &menuItem, nil
+// GetCategoryByIndex returns the category with the given index
+func (data *Response) GetCategoryByIndex(index int) *Category {
+	for _, category := range data.Categorys {
+		if category.Index == index {
+			return &category
 		}
 	}
-	return nil, errors.New("content not found")
+	return nil
 }
 
-// GetContent returns the MenuItem containing the main content
-func (account *Account) GetContent() (*MenuItem, error) {
+// GetCategoryByTitle returns the category with the given name
+func (data *Response) GetCategoryByTitle(title string) *Category {
+	for _, category := range data.Categorys {
+		if category.Title == title {
+			return &category
+		}
+	}
+	return nil
+}
+
+// GetContent returns the category containing the main content
+func (account *Account) GetContent() (*Category, error) {
 	data, err := account.GetData()
 	if err != nil {
 		return nil, err
 	}
 
-	return data.GetContent()
+	return data.GetContent(), nil
 }
 
-// GetTimetables returns all timetables,
-// use GetContent() to get the according menuItem first
-func (menuItem *MenuItem) GetTimetables() ([]MenuItemChildItem, error) {
-	for _, menuItemChild := range menuItem.Childs {
-		if menuItemChild.Method == "timetable" {
-			return menuItemChild.Root.Childs, nil
+// GetContent returns the category containing the main content
+func (data *Response) GetContent() *Category {
+	return data.GetCategoryByIndex(0)
+}
+
+// GetMenuByMethod returns the menu with the given method
+func (category *Category) GetMenuByMethod(method string) *Menu {
+	for _, menu := range category.Menus {
+		if menu.Method == method {
+			return &menu
 		}
 	}
-	return []MenuItemChildItem{}, errors.New("no timetables found")
+	return nil
 }
 
-// GetURL returns the url of specified content
-func (menuItemChildItem *MenuItemChildItem) GetURL() string {
-	return menuItemChildItem.Childs[0].Detail
+// GetTimetables returns all timetables
+func (category *Category) GetTimetables() []MenuItem {
+	timetables := category.GetMenuByMethod("timetable")
+	if timetables != nil {
+		return timetables.Root.Childs
+	}
+	return []MenuItem{}
 }
 
-// TODO: implement more getters
+// GetNews returns all news
+func (category *Category) GetNews() []MenuItem {
+	news := category.GetMenuByMethod("news")
+	if news != nil {
+		return news.Root.Childs
+	}
+	return []MenuItem{}
+}
+
+// GetTiles returns all news
+func (category *Category) GetTiles() *Menu {
+	return category.GetMenuByMethod("tiles")
+}
+
+// GetURL returns the URL of a timetable
+func (menuItem *MenuItem) GetURL() string {
+	return menuItem.Childs[0].Detail
+}
