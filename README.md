@@ -1,25 +1,29 @@
 # dsb-go
-> This library lets you access content from DSBmobile in golang.
 
 [![GoDoc](https://godoc.org/github.com/irgendwr/dsb-go?status.svg)](https://godoc.org/github.com/irgendwr/dsb-go)
 [![Travis](https://travis-ci.org/irgendwr/dsb-go.svg)](https://travis-ci.org/irgendwr/dsb-go)
+
+This library lets you access content from DSBmobile in golang.
+
+## Installation
 
 ```bash
 go get -u github.com/irgendwr/dsb-go
 ```
 
 ## Example
+
 ```go
 package main
 
 import (
-	"fmt"
+    "fmt"
 
-	"github.com/irgendwr/dsb-go"
+    "github.com/irgendwr/dsb-go"
 )
 
 func main() {
-    account := dsb.NewAccount("123456", "password")
+    account := dsb.NewAccount("user", "password")
     content, err := account.GetContent()
 
     if err != nil {

@@ -25,11 +25,11 @@ const (
 
 // request types
 const (
-	unknownRequest = iota
-	dataRequest
-	mailRequest
-	feedbackRequest
-	subjectsRequest
+	UnknownRequest = iota
+	DataRequest
+	MailRequest
+	FeedbackRequest
+	SubjectsRequest
 )
 
 // NewAccount creates a new account interface
@@ -72,7 +72,7 @@ func (account *Account) GetData() (*Response, error) {
 	JSONdata, err = json.Marshal(map[string]interface{}{
 		"req": map[string]interface{}{
 			"Data":     base64data,
-			"DataType": dataRequest,
+			"DataType": DataRequest,
 		},
 	})
 	if err != nil {
