@@ -15,11 +15,14 @@ import (
 
 // constants
 const (
-	bundleID   = "de.heinekingmedia.inhouse.dsbmobile.web"
-	webservice = "https://mobile.dsbcontrol.de/JsonHandlerWeb.ashx/GetData"
-	appVersion = "2.3"
+	bundleID   = "de.heinekingmedia.dsbmobile"
+	webservice = "https://www.dsbmobile.de/JsonHandler.ashx/GetData"
+	appVersion = "2.5.9"
+	appId      = "414c8312-bbac-4274-b5f4-8bbcfb613580"
 	lang       = "de"
-	device     = "WebApp"
+	device     = ""
+	// osVersion can be anything
+	osVersion  = "0"
 	success    = 0
 )
 
@@ -45,8 +48,8 @@ func (account *Account) GetData() (*Response, error) {
 		"Abos":       []string{},
 		"AppVersion": appVersion,
 		"Language":   lang,
-		"OsVersion":  "",
-		"AppId":      "",
+		"OsVersion":  osVersion,
+		"AppId":      appId,
 		"Device":     device,
 		"PushId":     "",
 		"BundleId":   bundleID,
