@@ -10,16 +10,18 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/pkg/errors"
 )
 
 // constants
 const (
-	bundleID   = "de.heinekingmedia.inhouse.dsbmobile.web"
-	webservice = "https://mobile.dsbcontrol.de/JsonHandlerWeb.ashx/GetData"
-	appVersion = "2.3"
+	bundleID   = "de.heinekingmedia.dsbmobile"
+	webservice = "https://www.dsbmobile.de/JsonHandler.ashx/GetData"
+	appVersion = "2.5.9"
 	lang       = "de"
-	device     = "WebApp"
+	device     = "Nexus 4"
+	osVersion  = "27 8.1.0"
 	success    = 0
 )
 
@@ -45,13 +47,13 @@ func (account *Account) GetData() (*Response, error) {
 		"Abos":       []string{},
 		"AppVersion": appVersion,
 		"Language":   lang,
-		"OsVersion":  "",
-		"AppId":      "",
+		"OsVersion":  osVersion,
+		"AppId":      uuid.New().String(),
 		"Device":     device,
 		"PushId":     "",
 		"BundleId":   bundleID,
-		"Date":       "",
-		"LastUpdate": "",
+		"Date":       time.Now(),
+		"LastUpdate": time.Now(),
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "json encode failed")
