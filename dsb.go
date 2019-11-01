@@ -41,7 +41,6 @@ func NewAccount(username string, password string) Account {
 
 // GetData returns all available information of the account
 func (account *Account) GetData() (*Response, error) {
-	u := uuid.New()
 	JSONdata, err := json.Marshal(map[string]interface{}{
 		"UserId":     account.username,
 		"UserPw":     account.password,
@@ -49,7 +48,7 @@ func (account *Account) GetData() (*Response, error) {
 		"AppVersion": appVersion,
 		"Language":   lang,
 		"OsVersion":  osVersion,
-		"AppId":      u.String(),
+		"AppId":      uuid.New().String(),
 		"Device":     device,
 		"PushId":     "",
 		"BundleId":   bundleID,
