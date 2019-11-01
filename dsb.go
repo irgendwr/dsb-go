@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/pkg/errors"
 )
 
@@ -18,11 +19,9 @@ const (
 	bundleID   = "de.heinekingmedia.dsbmobile"
 	webservice = "https://www.dsbmobile.de/JsonHandler.ashx/GetData"
 	appVersion = "2.5.9"
-	appId      = "414c8312-bbac-4274-b5f4-8bbcfb613580"
 	lang       = "de"
-	device     = ""
-	// osVersion can be anything
-	osVersion  = "0"
+	device     = "Nexus 4"
+	osVersion  = "27 8.1.0"
 	success    = 0
 )
 
@@ -42,6 +41,7 @@ func NewAccount(username string, password string) Account {
 
 // GetData returns all available information of the account
 func (account *Account) GetData() (*Response, error) {
+	u := uuid.New()
 	JSONdata, err := json.Marshal(map[string]interface{}{
 		"UserId":     account.username,
 		"UserPw":     account.password,
@@ -49,12 +49,12 @@ func (account *Account) GetData() (*Response, error) {
 		"AppVersion": appVersion,
 		"Language":   lang,
 		"OsVersion":  osVersion,
-		"AppId":      appId,
+		"AppId":      u.String(),
 		"Device":     device,
 		"PushId":     "",
 		"BundleId":   bundleID,
-		"Date":       "",
-		"LastUpdate": "",
+		"Date":       time.Now(),
+		"LastUpdate": time.Now(),
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "json encode failed")
