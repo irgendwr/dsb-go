@@ -4,6 +4,14 @@ package dsb
 type Account struct {
 	username string
 	password string
+
+	BundleID   string
+	Webservice string
+	AppVersion string
+	Lang       string
+	Device     string
+	OsVersion  string
+	UserAgent  string
 }
 
 // Response contains all of the information

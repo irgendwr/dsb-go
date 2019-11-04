@@ -16,13 +16,14 @@ import (
 
 // constants
 const (
-	bundleID   = "de.heinekingmedia.dsbmobile"
-	webservice = "https://www.dsbmobile.de/JsonHandler.ashx/GetData"
-	appVersion = "2.5.9"
-	lang       = "de"
-	device     = "Nexus 4"
-	osVersion  = "27 8.1.0"
-	success    = 0
+	defaultBundleID   = "de.heinekingmedia.dsbmobile"
+	defaultWebservice = "https://www.dsbmobile.de/JsonHandler.ashx/GetData"
+	defaultAppVersion = "2.5.9"
+	defaultLang       = "de"
+	defaultDevice     = "Nexus 4"
+	defaultOsVersion  = "27 8.1.0"
+	defaultUserAgent  = "dsb-go"
+	success           = 0
 )
 
 // request types
@@ -36,7 +37,18 @@ const (
 
 // NewAccount creates a new account interface
 func NewAccount(username string, password string) Account {
-	return Account{username, password}
+	return Account{
+		username: username,
+		password: password,
+
+		BundleID:   defaultBundleID,
+		Webservice: defaultWebservice,
+		AppVersion: defaultAppVersion,
+		Lang:       defaultLang,
+		Device:     defaultDevice,
+		OsVersion:  defaultOsVersion,
+		UserAgent:  defaultUserAgent,
+	}
 }
 
 // GetData returns all available information of the account
@@ -45,13 +57,13 @@ func (account *Account) GetData() (*Response, error) {
 		"UserId":     account.username,
 		"UserPw":     account.password,
 		"Abos":       []string{},
-		"AppVersion": appVersion,
-		"Language":   lang,
-		"OsVersion":  osVersion,
+		"AppVersion": account.AppVersion,
+		"Language":   account.Lang,
+		"OsVersion":  account.OsVersion,
 		"AppId":      uuid.New().String(),
-		"Device":     device,
+		"Device":     account.Device,
 		"PushId":     "",
-		"BundleId":   bundleID,
+		"BundleId":   account.BundleID,
 		"Date":       time.Now(),
 		"LastUpdate": time.Now(),
 	})
@@ -82,16 +94,16 @@ func (account *Account) GetData() (*Response, error) {
 	}
 
 	// build request
-	req, err := http.NewRequest("POST", webservice, bytes.NewReader(JSONdata))
+	req, err := http.NewRequest("POST", account.Webservice, bytes.NewReader(JSONdata))
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create request")
 	}
 
 	// set headers
-	req.Header.Add("bundle_id", bundleID)
+	req.Header.Add("bundle_id", account.BundleID)
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Referer", "https://www.dsbmobile.de/default.aspx")
-	req.Header.Set("User-Agent", "dsb-go")
+	req.Header.Set("User-Agent", account.UserAgent)
 
 	// send request
 	httpClient := &http.Client{
@@ -215,7 +227,12 @@ func (category *Category) GetTiles() *Menu {
 	return category.GetMenuByMethod("tiles")
 }
 
-// GetURL returns the URL of a timetable
-func (menuItem *MenuItem) GetURL() string {
+// GetDetail returns the detail property of a timetable
+func (menuItem *MenuItem) GetDetail() string {
 	return menuItem.Childs[0].Detail
+}
+
+// GetURL returns the URL of a timetable. Alias for GetDetail()
+func (menuItem *MenuItem) GetURL() string {
+	return menuItem.GetDetail()
 }
